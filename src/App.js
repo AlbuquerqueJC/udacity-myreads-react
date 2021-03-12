@@ -40,11 +40,13 @@ class BooksApp extends React.Component {
 
       if (results.constructor.name === "Array") {
         this.setState(() => ({
-          searchBooks: results
+            query: query,
+            searchBooks: results
         }));
       } else {
         this.setState(() => ({
-          searchBooks: []
+            query: query,
+            searchBooks: []
         }));
       }
     })

@@ -1,8 +1,14 @@
 import React from 'react'
-import {Link} from "react-router-dom";
-import SearchResults from "./SearchResults";
+import {Link} from "react-router-dom"
+import SearchResults from "./SearchResults"
+import PropTypes from "prop-types"
 
 class Search extends React.Component {
+    static propTypes = {
+        onChangeShelf: PropTypes.func.isRequired,
+        searchBooks: PropTypes.array.isRequired
+    }
+
     state = {
         query: ''
     }
