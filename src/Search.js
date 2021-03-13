@@ -5,20 +5,48 @@ import PropTypes from "prop-types"
 import * as BooksAPI from "./BooksAPI";
 
 class Search extends React.Component {
+    state = {
+        searchBooks: []
+    }
+
     static propTypes = {
-        onChangeShelf: PropTypes.func.isRequired,
-        searchBooks: PropTypes.array.isRequired
+        onChangeShelf: PropTypes.func.isRequired
     }
 
     handleInputChange = (e) => {
         const { value } = e.target;
-        this.props.onSearch(value)
+        this.onSearch(value)
     };
 
+    onSearch = (value) => {
+        console.log('onSearch app.js:', value)
+        this.setState(() => ({
+            query: value
+        }))
+        console.log('onSearch state app.js:', this.state.query)
+        this.searchAPI(this.state.query)
+    };
+
+    searchAPI = (query) => {
+        BooksAPI.search(query).then((results) => {
+            console.log('SearchBooks:', results);
+
+            if (results.constructor.name === "Array") {
+                this.setState(() => ({
+                    searchBooks: results
+                }));
+            } else {
+                this.setState(() => ({
+                    searchBooks: []
+                }));
+            }
+        })
+    }
+
     render() {
-        const { query, searchBooks, onChangeShelf } = this.props
+        const { onChangeShelf } = this.props
+        const { query, searchBooks } = this.state
         console.log('searchBooks:', searchBooks);
-        console.log('searchBooks state:', this.state.searchBooks);
 
         return (
             <div className="search-books">

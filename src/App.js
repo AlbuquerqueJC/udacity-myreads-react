@@ -27,31 +27,6 @@ class BooksApp extends React.Component {
         })
   }
 
-  onSearch = (value) => {
-        console.log('onSearch app.js:', value)
-        this.setState(() => ({
-          query: value
-        }))
-        console.log('onSearch state app.js:', this.state.query)
-        this.searchAPI(this.state.query)
-  };
-
-  searchAPI = (query) => {
-    BooksAPI.search(query).then((results) => {
-      console.log('SearchBooks:', results);
-
-      if (results.constructor.name === "Array") {
-        this.setState(() => ({
-            searchBooks: results
-        }));
-      } else {
-        this.setState(() => ({
-            searchBooks: []
-        }));
-      }
-    })
-  }
-
   onChangeShelf = (values) => {
       const { book, shelf } = values
       console.log("app.js onChangeShelf: ", book.id, shelf)
@@ -78,10 +53,6 @@ class BooksApp extends React.Component {
       })
   }
 
-  searchBooks = () => {
-      return this.state.searchBooks
-  }
-
   render() {
     const {books, shelf} = this.state
       // console.log('searchBooks.state: ', searchBooks)
@@ -90,13 +61,9 @@ class BooksApp extends React.Component {
       <div className="app">
 
         <Route exact path='/search' render={({history}) => (
-          <Search searchBooks={this.searchBooks} onSearch={this.onSearch}
-                  query={this.state.query}
+          <Search onSearch={this.onSearch} query=''
                   onChangeShelf={(e) => {
                       this.onChangeShelf(e)
-                      this.setState(() => ({
-                          searchBooks: []
-                      }))
                       history.push('/')
                   }} />
         )} />
