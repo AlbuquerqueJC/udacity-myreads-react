@@ -28,7 +28,9 @@ class Search extends React.Component {
     };
 
     searchAPI = (query) => {
-        BooksAPI.search(query).then((results) => {
+        const searchValue = query.toString().toLowerCase().replace(/\s/g, '+')
+        console.log('SearchBooks: (string)', searchValue);
+        BooksAPI.search(searchValue).then((results) => {
             console.log('SearchBooks:', results);
 
             if (results.constructor.name === "Array") {
