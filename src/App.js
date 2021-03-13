@@ -11,7 +11,6 @@ class BooksApp extends React.Component {
     query: '',
     book: [],
     books: [],
-    searchBooks: [],
     shelf: [{name: 'currentlyReading', title: 'Currently Reading'},
         {name: 'wantToRead', title: 'Want To Read'},
         {name: 'read', title: 'Read'}]
@@ -25,31 +24,6 @@ class BooksApp extends React.Component {
             books
           }))
         })
-  }
-
-  onSearch = (value) => {
-    console.log('onSearch app.js:', value)
-    if (value.length > 1) {
-      this.searchAPI(value)
-    }
-  };
-
-  searchAPI = (query) => {
-    BooksAPI.search(query).then((results) => {
-      console.log('SearchBooks:', results);
-
-      if (results.constructor.name === "Array") {
-        this.setState(() => ({
-            query: query,
-            searchBooks: results
-        }));
-      } else {
-        this.setState(() => ({
-            query: query,
-            searchBooks: []
-        }));
-      }
-    })
   }
 
   onChangeShelf = (values) => {

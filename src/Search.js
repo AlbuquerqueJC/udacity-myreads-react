@@ -1,36 +1,26 @@
 import React from 'react'
-import {Link} from "react-router-dom"
-import SearchResults from "./SearchResults"
-import PropTypes from "prop-types"
-import * as BooksAPI from "./BooksAPI";
+import {Link} from "react-router-dom";
+import * as BooksAPI from './BooksAPI'
+import SearchResults from "./SearchResults";
 
 class Search extends React.Component {
-    state = {
-        searchBooks: []
+    constructor(props) {
+        super(props);
+        this.state = {
+            query: '',
+            searchBooks: []
+        }
     }
-
-    static propTypes = {
-        onChangeShelf: PropTypes.func.isRequired
-    }
-
-    handleInputChange = (e) => {
-        const { value } = e.target;
-        this.onSearch(value)
-    };
 
     onSearch = (value) => {
         console.log('onSearch app.js:', value)
-        this.setState(() => ({
-            query: value
-        }))
-        console.log('onSearch state app.js:', this.state.query)
-        this.searchAPI(this.state.query)
+        if (value.length > 1) {
+            this.searchAPI(value)
+        }
     };
 
     searchAPI = (query) => {
-        const searchValue = query.toString().toLowerCase().replace(/\s/g, '+')
-        console.log('SearchBooks: (string)', searchValue);
-        BooksAPI.search(searchValue).then((results) => {
+        BooksAPI.search(query).then((results) => {
             console.log('SearchBooks:', results);
 
             if (results.constructor.name === "Array") {
@@ -45,9 +35,19 @@ class Search extends React.Component {
         })
     }
 
+    handleInputChange = (e) => {
+        const { value } = e.target;
+
+        this.setState(() => ({
+            query: value
+        }));
+
+        this.onSearch(this.state.query)
+    };
+
     render() {
-        const { onChangeShelf } = this.props
         const { query, searchBooks } = this.state
+        const { onChangeShelf } = this.props
         console.log('searchBooks:', searchBooks);
 
         return (
