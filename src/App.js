@@ -121,7 +121,9 @@ class BooksApp extends React.Component {
             </div>
             <div className="open-search">
               <button onClick={(e) => {
-
+                  this.setState(() => ({
+                      searchBooks: []
+                  }))
                   history.push('/search')
               }}>Add a book</button>
             </div>
