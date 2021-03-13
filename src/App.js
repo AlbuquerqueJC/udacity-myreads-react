@@ -7,15 +7,18 @@ import Bookshelf from "./Bookshelf";
 
 class BooksApp extends React.Component {
 
-  state = {
-    query: '',
-    book: [],
-    books: [],
-    searchBooks: [],
-    shelf: [{name: 'currentlyReading', title: 'Currently Reading'},
-        {name: 'wantToRead', title: 'Want To Read'},
-        {name: 'read', title: 'Read'}]
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            query: '',
+            book: [],
+            books: [],
+            searchBooks: [],
+            shelf: [{name: 'currentlyReading', title: 'Currently Reading'},
+                {name: 'wantToRead', title: 'Want To Read'},
+                {name: 'read', title: 'Read'}]
+        }
+    }
 
   componentDidMount() {
     BooksAPI.getAll()
