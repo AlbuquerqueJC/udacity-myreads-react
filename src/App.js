@@ -7,18 +7,15 @@ import Bookshelf from "./Bookshelf";
 
 class BooksApp extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            query: '',
-            book: [],
-            books: [],
-            searchBooks: [],
-            shelf: [{name: 'currentlyReading', title: 'Currently Reading'},
-                {name: 'wantToRead', title: 'Want To Read'},
-                {name: 'read', title: 'Read'}]
-        }
-    }
+  state = {
+    query: '',
+    book: [],
+    books: [],
+    searchBooks: [],
+    shelf: [{name: 'currentlyReading', title: 'Currently Reading'},
+        {name: 'wantToRead', title: 'Want To Read'},
+        {name: 'read', title: 'Read'}]
+  }
 
   componentDidMount() {
     BooksAPI.getAll()
@@ -30,20 +27,42 @@ class BooksApp extends React.Component {
         })
   }
 
+  onSearch = (value) => {
+    console.log('onSearch app.js:', value)
+    if (value.length > 1) {
+      this.searchAPI(value)
+    }
+  };
+
+  searchAPI = (query) => {
+    BooksAPI.search(query).then((results) => {
+      console.log('SearchBooks:', results);
+
+      if (results.constructor.name === "Array") {
+        this.setState(() => ({
+            query: query,
+            searchBooks: results
+        }));
+      } else {
+        this.setState(() => ({
+            query: query,
+            searchBooks: []
+        }));
+      }
+    })
+  }
+
   onChangeShelf = (values) => {
-      const { book, shelf } = values
-      console.log("app.js onChangeShelf: ", book.id, shelf)
+      const { bookId, shelf } = values
+      console.log("app.js onChangeShelf: ", bookId, shelf)
 
-      // Clear searchBooks state after a book has changed shelf
-      this.setState(() => ({
-          searchBooks: []
-      }))
-
-      this.updateBook(book, shelf)
+      BooksAPI.get(bookId).then((book) => {
+          console.log(book)
+          this.updateBook(book, shelf)
+      })
   }
 
   updateBook = (book, shelf) => {
-      console.log('searchBooks state:', this.state.searchBooks);
       BooksAPI.update(book, shelf).then((response) => {
           console.log(response)
           book.shelf = shelf
@@ -57,14 +76,13 @@ class BooksApp extends React.Component {
   }
 
   render() {
-    const {books, shelf} = this.state
-      // console.log('searchBooks.state: ', searchBooks)
+    const {searchBooks, books, shelf} = this.state
 
     return (
       <div className="app">
 
         <Route exact path='/search' render={({history}) => (
-          <Search onSearch={this.onSearch} query=''
+          <Search searchBooks={searchBooks} onSearch={this.onSearch}
                   onChangeShelf={(e) => {
                       this.onChangeShelf(e)
                       history.push('/')
@@ -90,12 +108,7 @@ class BooksApp extends React.Component {
               </div>
             </div>
             <div className="open-search">
-              <button onClick={(e) => {
-                  this.setState(() => ({
-                      searchBooks: []
-                  }))
-                  history.push('/search')
-              }}>Add a book</button>
+              <button onClick={() => history.push('/search')}>Add a book</button>
             </div>
           </div>
         )} />
