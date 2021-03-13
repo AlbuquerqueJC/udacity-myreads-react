@@ -28,10 +28,12 @@ class BooksApp extends React.Component {
   }
 
   onSearch = (value) => {
-    console.log('onSearch app.js:', value)
-    if (value.length > 1) {
-      this.searchAPI(value)
-    }
+        console.log('onSearch app.js:', value)
+        this.setState(() => ({
+          query: value
+        }))
+        console.log('onSearch state app.js:', this.state.query)
+        this.searchAPI(this.state.query)
   };
 
   searchAPI = (query) => {
@@ -40,12 +42,10 @@ class BooksApp extends React.Component {
 
       if (results.constructor.name === "Array") {
         this.setState(() => ({
-            query: query,
             searchBooks: results
         }));
       } else {
         this.setState(() => ({
-            query: query,
             searchBooks: []
         }));
       }
@@ -53,16 +53,19 @@ class BooksApp extends React.Component {
   }
 
   onChangeShelf = (values) => {
-      const { bookId, shelf } = values
-      console.log("app.js onChangeShelf: ", bookId, shelf)
+      const { book, shelf } = values
+      console.log("app.js onChangeShelf: ", book.id, shelf)
 
-      BooksAPI.get(bookId).then((book) => {
-          console.log(book)
-          this.updateBook(book, shelf)
-      })
+      // Clear searchBooks state after a book has changed shelf
+      this.setState(() => ({
+          searchBooks: []
+      }))
+
+      this.updateBook(book, shelf)
   }
 
   updateBook = (book, shelf) => {
+      console.log('searchBooks state:', this.state.searchBooks);
       BooksAPI.update(book, shelf).then((response) => {
           console.log(response)
           book.shelf = shelf
@@ -75,16 +78,25 @@ class BooksApp extends React.Component {
       })
   }
 
+  searchBooks = () => {
+      return this.state.searchBooks
+  }
+
   render() {
-    const {searchBooks, books, shelf} = this.state
+    const {books, shelf} = this.state
+      // console.log('searchBooks.state: ', searchBooks)
 
     return (
       <div className="app">
 
         <Route exact path='/search' render={({history}) => (
-          <Search searchBooks={searchBooks} onSearch={this.onSearch}
+          <Search searchBooks={this.searchBooks} onSearch={this.onSearch}
+                  query={this.state.query}
                   onChangeShelf={(e) => {
                       this.onChangeShelf(e)
+                      this.setState(() => ({
+                          searchBooks: []
+                      }))
                       history.push('/')
                   }} />
         )} />
@@ -108,7 +120,10 @@ class BooksApp extends React.Component {
               </div>
             </div>
             <div className="open-search">
-              <button onClick={() => history.push('/search')}>Add a book</button>
+              <button onClick={(e) => {
+
+                  history.push('/search')
+              }}>Add a book</button>
             </div>
           </div>
         )} />

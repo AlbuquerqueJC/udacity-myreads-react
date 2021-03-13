@@ -2,6 +2,7 @@ import React from 'react'
 import {Link} from "react-router-dom"
 import SearchResults from "./SearchResults"
 import PropTypes from "prop-types"
+import * as BooksAPI from "./BooksAPI";
 
 class Search extends React.Component {
     static propTypes = {
@@ -9,26 +10,15 @@ class Search extends React.Component {
         searchBooks: PropTypes.array.isRequired
     }
 
-    state = {
-        query: ''
-    }
-
     handleInputChange = (e) => {
         const { value } = e.target;
-
-        this.setState(() => ({
-            query: value
-        }));
-
-        if (value.length > 1) {
-            this.props.onSearch(value)
-        }
+        this.props.onSearch(value)
     };
 
     render() {
-        const { query } = this.state
-        const { searchBooks, onChangeShelf } = this.props
+        const { query, searchBooks, onChangeShelf } = this.props
         console.log('searchBooks:', searchBooks);
+        console.log('searchBooks state:', this.state.searchBooks);
 
         return (
             <div className="search-books">
