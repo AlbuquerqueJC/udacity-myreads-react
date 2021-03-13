@@ -1,22 +1,18 @@
 import React from 'react'
-import Book from "./Book"
-import PropTypes from "prop-types"
+import Book from "./Book";
 
-const SearchResults = props => {
-    const { searchBooks, onChangeShelf } = props;
+class SearchResults extends React.Component {
+    render() {
+        const { searchBooks, onChangeShelf } = this.props;
 
-    return (
-            <ol className="books-grid">
-                {searchBooks.map((book, index) => (
-                    <Book key={index} book={book} onChangeShelf={onChangeShelf} />
-                ))}
-            </ol>
-    )
-}
-
-SearchResults.propTypes = {
-    onChangeShelf: PropTypes.func.isRequired,
-    searchBooks: PropTypes.array.isRequired
+        return (
+                <ol className="books-grid">
+                    {searchBooks.map((book, index) => (
+                        <Book key={index} book={book} onChangeShelf={onChangeShelf} />
+                    ))}
+                </ol>
+        )
+    }
 }
 
 export default SearchResults
