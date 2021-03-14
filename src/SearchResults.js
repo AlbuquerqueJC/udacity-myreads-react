@@ -5,21 +5,26 @@ import PropTypes from "prop-types";
 class SearchResults extends React.Component {
 
     matchShelfValue(book) {
-        let matchingBook = this.props.books.filter((b) => (b.id.includes(book.id)))
+        const matchingBook = this.props.books.filter((b) => (b.id.includes(book.id)))
         matchingBook.map((b) => ( book.shelf = b.shelf ))
+        if (book.shelf === undefined) {
+            book.shelf = 'none'
+        }
         return book
     }
 
     render() {
-        const { searchBooks, onChangeShelf, books } = this.props;
-        console.log('SearchResults books:', books)
+        const { searchBooks, onChangeShelf } = this.props;
 
         return (
                 <ol className="books-grid">
-                    {searchBooks.map((book, index) => (
-                        // Compare to existing book, add shelf value to book
-                        <Book key={index} book={this.matchShelfValue(book)} onChangeShelf={onChangeShelf} />
-                    ))}
+                    {searchBooks.map((book, index) => {
+                        const resultBook = this.matchShelfValue(book)
+                        return (
+                            // Compare to existing book, add shelf value to book
+                            <Book key={index} book={resultBook} onChangeShelf={onChangeShelf} />
+                        )
+                    })}
                 </ol>
         )
     }

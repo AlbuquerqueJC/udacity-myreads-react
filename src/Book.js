@@ -27,7 +27,7 @@ class Book extends React.Component {
             ? book.shelf
             : 'none'
 
-        console.log('Book shelf', shelfValue)
+        console.log('Book shelf?', shelfValue)
 
         return (
             <li>
@@ -43,6 +43,7 @@ class Book extends React.Component {
                             <form onSubmit={this.changeShelf}>
                                 <input type="hidden" name="bookId" value={book.id} />
                                 <select name="shelf"
+                                        defaultChecked={shelfValue}
                                         defaultValue={shelfValue}
                                         onChange={() => this.submitButton.click()}>
                                     <option value="move" disabled>Move to...</option>
@@ -56,7 +57,11 @@ class Book extends React.Component {
                         </div>
                     </div>
                     <div className="book-title">{book.title}</div>
-                    <div className="book-authors">{authors.map((author) => (author))}</div>
+                    {authors.map((author, index) => (
+                        <div className="book-authors" key={index}>
+                            {author}
+                        </div>
+                    ))}
                 </div>
             </li>
         )
