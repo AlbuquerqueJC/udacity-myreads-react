@@ -8,7 +8,6 @@ import Bookshelf from "./Bookshelf";
 class BooksApp extends React.Component {
 
   state = {
-    query: '',
     book: [],
     books: [],
     shelf: [{name: 'currentlyReading', title: 'Currently Reading'},
@@ -31,14 +30,12 @@ class BooksApp extends React.Component {
       console.log("app.js onChangeShelf: ", bookId, shelf)
 
       BooksAPI.get(bookId).then((book) => {
-          console.log(book)
           this.updateBook(book, shelf)
       })
   }
 
   updateBook = (book, shelf) => {
       BooksAPI.update(book, shelf).then((response) => {
-          console.log(response)
           book.shelf = shelf
           const otherBooks = this.state.books.filter((b) => (
               !b.id.includes(book.id)
@@ -56,7 +53,9 @@ class BooksApp extends React.Component {
       <div className="app">
 
         <Route exact path='/search' render={({history}) => (
-          <Search searchBooks={searchBooks} onSearch={this.onSearch}
+          <Search searchBooks={searchBooks}
+                  books={books}
+                  onSearch={this.onSearch}
                   onChangeShelf={(e) => {
                       this.onChangeShelf(e)
                       history.push('/')

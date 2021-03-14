@@ -1,5 +1,6 @@
 import React from 'react'
 import serializeForm from 'form-serialize'
+import PropTypes from "prop-types";
 
 class Book extends React.Component {
 
@@ -62,4 +63,7 @@ class Book extends React.Component {
     }
 }
 
+Book.propTypes = {
+    book: PropTypes.object.isRequired
+}
 export default Book

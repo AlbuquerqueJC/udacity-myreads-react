@@ -2,6 +2,7 @@ import React from 'react'
 import {Link} from "react-router-dom";
 import * as BooksAPI from './BooksAPI'
 import SearchResults from "./SearchResults";
+import PropTypes from "prop-types";
 
 class Search extends React.Component {
     constructor(props) {
@@ -12,43 +13,60 @@ class Search extends React.Component {
         }
     }
 
+    updateSearch = (books) => {
+        this.setState(() => ({
+            searchBooks: books
+        }))
+    }
+    clearSearch = () => {
+        this.updateSearch([])
+    }
+
+    updateQuery = (query) => {
+        this.setState(() => ({
+            query: query
+        }))
+    }
+    clearQuery = () => {
+        this.updateQuery('')
+    }
+
     onSearch = (value) => {
-        console.log('onSearch app.js:', value)
-        if (value.length > 1) {
+        // console.log('onSearch app.js:', value)
+        if (value.length > 0) {
             this.searchAPI(value)
         }
-    };
+    }
 
     searchAPI = (query) => {
         BooksAPI.search(query).then((results) => {
-            console.log('SearchBooks:', results);
-
             if (results.constructor.name === "Array") {
-                this.setState(() => ({
-                    searchBooks: results
-                }));
+                this.updateSearch(results)
             } else {
-                this.setState(() => ({
-                    searchBooks: []
-                }));
+                this.clearSearch()
             }
         })
     }
 
     handleInputChange = (e) => {
-        const { value } = e.target;
+        const { value } = e.target
 
-        this.setState(() => ({
-            query: value
-        }));
-
-        this.onSearch(this.state.query)
-    };
+        // If there is a query value, search for it
+        if (value) {
+            this.updateQuery(value)
+            // Search for value
+            this.onSearch(value.toString().toLowerCase())
+        }
+        // Else set to blank
+        else {
+            this.clearQuery()
+            this.clearSearch()
+        }
+    }
 
     render() {
         const { query, searchBooks } = this.state
-        const { onChangeShelf } = this.props
-        console.log('searchBooks:', searchBooks);
+        const { onChangeShelf, books } = this.props
 
         return (
             <div className="search-books">
@@ -61,14 +79,20 @@ class Search extends React.Component {
                     </div>
                 </div>
                 <div className="search-books-results">
-                    {searchBooks.length === 0 && (
+                    {query.length === 0 && (
                         <div>No search results to display.</div>
                     )}
-                    <SearchResults searchBooks={searchBooks} onChangeShelf={onChangeShelf} />
+                    {query.length > 0 && (
+                        <SearchResults books={books} searchBooks={searchBooks} onChangeShelf={onChangeShelf} />
+                    )}
                 </div>
             </div>
         )
     }
 }
 
+Search.propTypes = {
+    books: PropTypes.array.isRequired,
+    onChangeShelf: PropTypes.func.isRequired
+}
 export default Search
